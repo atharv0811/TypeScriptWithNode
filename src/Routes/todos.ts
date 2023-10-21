@@ -8,20 +8,22 @@ router.get('/', (req, res, next) => {
     res.status(200).json({ todos: todos });
 });
 
+type requestTextBody = { text: string }
+type requestIdParams = { id: string }
+
 router.post('/todo', (req, res, next) => {
-    const text: string = req.body.text;
+    const body = req.body as requestTextBody;
     const newTodo: Todo = {
-        id: Date.now(),
-        text: text
+        id: Date.now().toString(),
+        text: body.text
     };
     todos.push(newTodo);
-    res.status(200).send();
+    res.status(200).json({ message: 'New Todo Added' });
 });
 
-router.delete('/todo-delete', (req, res, next) => {
-    const id: number = req.body.id;
-    console.log(id)
-    const todoIndex: number = todos.findIndex(todo => todo.id == id);
+router.delete('/todo-delete/:id', (req, res, next) => {
+    const params = req.params as requestIdParams;
+    const todoIndex: number = todos.findIndex(todo => todo.id == params.id);
     if (todoIndex !== -1) {
         todos.splice(todoIndex, 1);
         res.status(200).json({ message: 'Todo deleted successfully' });
@@ -30,13 +32,12 @@ router.delete('/todo-delete', (req, res, next) => {
     }
 });
 
-router.put('/todo-update', (req, res, next) => {
-    const id: number = req.body.id;
-    const newText: string = req.body.text;
-    console.log(id)
-    const todoToUpdate: Todo | undefined = todos.find(todo => todo.id == id);
+router.put('/todo-update/:id', (req, res, next) => {
+    const params = req.params as requestIdParams;
+    const body = req.body as requestTextBody;
+    const todoToUpdate: Todo | undefined = todos.find(todo => todo.id == params.id);
     if (todoToUpdate) {
-        todoToUpdate.text = newText;
+        todoToUpdate.text = body.text;
         res.status(200).json({ message: 'Todo updated successfully' });
     } else {
         res.status(404).json({ message: 'Todo not found' });

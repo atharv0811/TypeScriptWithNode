@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bodyParser = require('body-parser');
 const express_1 = __importDefault(require("express"));
-const todos_1 = __importDefault(require("./Routes/todos"));
+const todos_1 = __importDefault(require("../src/Routes/todos"));
 const app = (0, express_1.default)();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
